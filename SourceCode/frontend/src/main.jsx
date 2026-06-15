@@ -1,19 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import React from "react"
+import ReactDOM from "react-dom/client"
+import { ThemeProvider, CssBaseline } from "@mui/material"
+import App from "./App"
+import theme from "./theme"
+import { CartProvider } from "./context/CartContext"
+import "./index.css"
 
-import {
-  CartProvider
-} from "./context/CartContext";
-
-ReactDOM.createRoot(
-  document.getElementById("root")
-).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CartProvider>
-
-    <App />
-
-  </CartProvider>
-  </React.StrictMode>
-);
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <CartProvider>
+        <App />
+      </CartProvider>
+    </ThemeProvider>
+  </React.StrictMode>,
+)

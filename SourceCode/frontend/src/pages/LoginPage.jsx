@@ -1,65 +1,101 @@
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebase";
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../firebase/firebase"
+import { Container, Paper, Typography, TextField, Button, Stack, Box } from "@mui/material"
+import SpaIcon from "@mui/icons-material/Spa"
 
 function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
 
   const handleLogin = async () => {
-
     try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
 
-      const userCredential =
-              await signInWithEmailAndPassword(
-                      auth,
-                      email,
-                      password
-              );
+      const token = await userCredential.user.getIdToken(true)
+      console.log(token)
 
-      const token =
-              await userCredential.user.getIdToken(true);
+      alert("Login successful")
 
-      console.log(token);
-
-      alert("Login successful");
+      // 🔥 BURASI VACİBDİR
+      navigate("/products")
 
     } catch (error) {
-
-      alert(error.message);
-
+      alert(error.message)
     }
-  };
+  }
 
   return (
-          <div>
+    <Container maxWidth="xs" sx={{ py: 8 }}>
+      <Paper sx={{ p: 4 }}>
+        <Stack alignItems="center" spacing={1} sx={{ mb: 3 }}>
+          <Box
+            sx={{
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+              width: 48,
+              height: 48,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SpaIcon />
+          </Box>
 
-            <h2>Login</h2>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            Welcome back
+          </Typography>
 
-            <input
-                    placeholder="Email"
-                    onChange={(e) =>
-                            setEmail(e.target.value)}
-            />
+          <Typography color="text.secondary" variant="body2">
+            Sign in to your Healthy Store account
+          </Typography>
+        </Stack>
 
-            <br />
+        <Stack spacing={2}>
+          <TextField
+            label="Email"
+            type="email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-            <input
-                    type="password"
-                    placeholder="Password"
-                    onChange={(e) =>
-                            setPassword(e.target.value)}
-            />
+          <TextField
+            label="Password"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-            <br />
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
+            onClick={handleLogin}
+          >
+            Login
+          </Button>
+        </Stack>
 
-            <button onClick={handleLogin}>
-              Login
-            </button>
-
-          </div>
-  );
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 3, textAlign: "center" }}
+        >
+          Don&apos;t have an account?{" "}
+          <Box component={Link} to="/register" sx={{ color: "primary.main", fontWeight: 600 }}>
+            Register
+          </Box>
+        </Typography>
+      </Paper>
+    </Container>
+  )
 }
 
-export default LoginPage;
+export default LoginPage

@@ -1,8 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { Box } from "@mui/material"
-import { useEffect, useState } from "react"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "./firebase/firebase"
+import { useAuth } from "./context/AuthContext"
 
 import Navbar from "./components/Navbar"
 
@@ -21,78 +19,70 @@ import CancelPage from "./pages/CancelPage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 
+// Routes where the navbar should be hidden (auth screens).
+const AUTH_ROUTES = ["/login", "/register"]
+
+function Layout() {
+  const location = useLocation()
+  const { user, isAdmin } = useAuth()
+  const hideNavbar = AUTH_ROUTES.includes(location.pathname)
+
+  return (
+    <>
+      {!hideNavbar && <Navbar />}
+
+      <Box component="main" sx={{ minHeight: hideNavbar ? "100vh" : "calc(100vh - 68px)" }}>
+        <Routes>
+          {/* ROOT → LOGIN */}
+          <Route path="/" element={<Navigate to={user ? "/products" : "/login"} replace />} />
+
+          {/* PUBLIC AUTH ROUTES (redirect away if already logged in) */}
+          <Route path="/login" element={user ? <Navigate to="/products" replace /> : <LoginPage />} />
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/products" replace /> : <RegisterPage />}
+          />
+
+          {/* PROTECTED USER ROUTES */}
+          <Route path="/products" element={user ? <ProductsPage /> : <Navigate to="/login" replace />} />
+          <Route
+            path="/products/:id"
+            element={user ? <ProductDetailsPage /> : <Navigate to="/login" replace />}
+          />
+          <Route path="/cart" element={user ? <CartPage /> : <Navigate to="/login" replace />} />
+          <Route path="/orders" element={user ? <OrdersPage /> : <Navigate to="/login" replace />} />
+
+          {/* ADMIN ROUTES (only for admins; normal users are redirected) */}
+          <Route
+            path="/admin"
+            element={user ? (isAdmin ? <AdminPage /> : <Navigate to="/products" replace />) : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/admin/products"
+            element={user ? (isAdmin ? <AdminProductsPage /> : <Navigate to="/products" replace />) : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/admin/orders"
+            element={user ? (isAdmin ? <AdminOrdersPage /> : <Navigate to="/products" replace />) : <Navigate to="/login" replace />}
+          />
+
+          {/* PAYMENT RESULT PAGES */}
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/cancel" element={<CancelPage />} />
+        </Routes>
+      </Box>
+    </>
+  )
+}
+
 function App() {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u)
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
+  const { loading } = useAuth()
 
   if (loading) return null
 
   return (
     <BrowserRouter>
-      <Navbar />
-
-      <Box component="main" sx={{ minHeight: "calc(100vh - 64px)" }}>
-        <Routes>
-
-          {/* ROOT → LOGIN */}
-          <Route path="/" element={<Navigate to="/login" />} />
-
-          {/* PUBLIC */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-
-          {/* PROTECTED USER ROUTES */}
-          <Route
-            path="/products"
-            element={user ? <ProductsPage /> : <Navigate to="/login" />}
-          />
-
-          <Route
-            path="/products/:id"
-            element={user ? <ProductDetailsPage /> : <Navigate to="/login" />}
-          />
-
-          <Route
-            path="/cart"
-            element={user ? <CartPage /> : <Navigate to="/login" />}
-          />
-
-          <Route
-            path="/orders"
-            element={user ? <OrdersPage /> : <Navigate to="/login" />}
-          />
-
-          {/* ADMIN */}
-          <Route
-            path="/admin"
-            element={user ? <AdminPage /> : <Navigate to="/login" />}
-          />
-
-          <Route
-            path="/admin/products"
-            element={user ? <AdminProductsPage /> : <Navigate to="/login" />}
-          />
-
-          <Route
-            path="/admin/orders"
-            element={user ? <AdminOrdersPage /> : <Navigate to="/login" />}
-          />
-
-          {/* PAYMENT RESULT PAGES (public) */}
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/cancel" element={<CancelPage />} />
-
-        </Routes>
-      </Box>
+      <Layout />
     </BrowserRouter>
   )
 }

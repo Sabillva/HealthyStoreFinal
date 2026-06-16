@@ -1,41 +1,77 @@
-import { Link } from "react-router-dom"
-import { Container, Paper, Typography, Button, Box } from "@mui/material"
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined"
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Container, Paper, Typography, Button, Stack } from '@mui/material';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import { useCart } from '../context/CartContext';
 
-function SuccessPage() {
+export default function SuccessPage() {
+  const navigate = useNavigate();
+  const { clearCart } = useCart();
+
+  // Keep existing behaviour: clear the cart after a successful payment.
+  useEffect(() => {
+    clearCart();
+  }, [clearCart]);
+
   return (
-    <Container maxWidth="sm" sx={{ py: 10 }}>
-      <Paper sx={{ p: 6, textAlign: "center" }}>
-        <Box
+    <Box sx={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', py: 6 }}>
+      <Container maxWidth="sm">
+        <Paper
+          elevation={0}
           sx={{
-            width: 80,
-            height: 80,
-            borderRadius: "50%",
-            bgcolor: "#e8f1e4",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mx: "auto",
-            mb: 2,
+            p: { xs: 4, sm: 6 },
+            textAlign: 'center',
+            borderRadius: 4,
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
-          <CheckCircleOutlineIcon color="success" sx={{ fontSize: 48 }} />
-        </Box>
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Payment Successful
-        </Typography>
-        <Typography color="text.secondary" sx={{ mt: 1.5, mb: 3 }}>
-          Thank you for your order. We&apos;re getting it ready for you.
-        </Typography>
-        <Button component={Link} to="/orders" variant="contained" size="large" sx={{ mr: 1 }}>
-          View My Orders
-        </Button>
-        <Button component={Link} to="/" variant="outlined" size="large">
-          Continue Shopping
-        </Button>
-      </Paper>
-    </Container>
-  )
-}
+          <Box
+            sx={{
+              width: 96,
+              height: 96,
+              borderRadius: '50%',
+              bgcolor: 'success.light',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mx: 'auto',
+              mb: 3,
+            }}
+          >
+            <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
+          </Box>
 
-export default SuccessPage
+          <Typography variant="h4" fontWeight={800} gutterBottom>
+            Payment Successful
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 380, mx: 'auto' }}>
+            Thank you for your order! Your healthy goods are on their way. You can track your
+            purchase anytime from the My Orders page.
+          </Typography>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<ShoppingBagOutlinedIcon />}
+              onClick={() => navigate('/orders')}
+            >
+              View My Orders
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              startIcon={<StorefrontOutlinedIcon />}
+              onClick={() => navigate('/products')}
+            >
+              Continue Shopping
+            </Button>
+          </Stack>
+        </Paper>
+      </Container>
+    </Box>
+  );
+}

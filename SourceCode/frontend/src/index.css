@@ -6,9 +6,22 @@ body,
 }
 
 body {
-  background-color: #f6f8f4;
+  background-color: #f4f7f1;
 }
 
 a {
   color: inherit;
+}
+
+/* Subtle scrollbar to match the fresh theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(46, 125, 50, 0.25);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(46, 125, 50, 0.4);
 }

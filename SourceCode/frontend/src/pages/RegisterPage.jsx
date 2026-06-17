@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase/firebase"
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth"
 import {
   Box,
   Paper,
@@ -38,8 +38,8 @@ function RegisterPage() {
     setLoading(true)
     try {
       await createUserWithEmailAndPassword(auth, email, password)
+      await signOut(auth)
       setSuccess(true)
-      // Brief confirmation, then send the user to login.
       setTimeout(() => navigate("/login"), 1200)
     } catch (error) {
       setError(error.message.replace("Firebase:", "").trim())

@@ -13,7 +13,6 @@ a {
   color: inherit;
 }
 
-/* Subtle scrollbar to match the fresh theme */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

@@ -54,7 +54,6 @@ function ProductDetailsPage() {
     fetchQuestions()
   }, [id])
 
-  // Prefill the name fields with the signed-in user's email.
   useEffect(() => {
     if (user?.email) {
       setReviewUserName((prev) => prev || user.email)
@@ -129,7 +128,6 @@ function ProductDetailsPage() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0
 
-  // Rating distribution for the summary bars.
   const distribution = [5, 4, 3, 2, 1].map((star) => {
     const c = reviews.filter((r) => Math.round(r.rating) === star).length
     return { star, count: c, pct: reviews.length ? (c / reviews.length) * 100 : 0 }

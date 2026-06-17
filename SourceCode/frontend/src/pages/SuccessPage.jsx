@@ -10,7 +10,6 @@ export default function SuccessPage() {
   const navigate = useNavigate();
   const { clearCart } = useCart();
 
-  // Keep existing behaviour: clear the cart after a successful payment.
   useEffect(() => {
     clearCart();
   }, [clearCart]);

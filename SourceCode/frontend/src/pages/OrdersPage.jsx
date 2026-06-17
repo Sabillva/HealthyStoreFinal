@@ -35,7 +35,7 @@ function OrdersPage() {
   const fetchOrders = async () => {
     try {
       const userName = auth.currentUser?.email
-      const response = await api.get(`/api/orders?userName=${userName}`)
+      const response = await api.get(`/api/orders/history/${encodeURIComponent(userName)}`)
       setOrders(response.data)
     } catch (error) {
       console.error(error)

@@ -19,7 +19,6 @@ import CancelPage from "./pages/CancelPage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 
-// Routes where the navbar should be hidden (auth screens).
 const AUTH_ROUTES = ["/login", "/register"]
 
 function Layout() {
@@ -33,17 +32,14 @@ function Layout() {
 
       <Box component="main" sx={{ minHeight: hideNavbar ? "100vh" : "calc(100vh - 68px)" }}>
         <Routes>
-          {/* ROOT → LOGIN */}
           <Route path="/" element={<Navigate to={user ? "/products" : "/login"} replace />} />
 
-          {/* PUBLIC AUTH ROUTES (redirect away if already logged in) */}
           <Route path="/login" element={user ? <Navigate to="/products" replace /> : <LoginPage />} />
           <Route
             path="/register"
             element={user ? <Navigate to="/products" replace /> : <RegisterPage />}
           />
 
-          {/* PROTECTED USER ROUTES */}
           <Route path="/products" element={user ? <ProductsPage /> : <Navigate to="/login" replace />} />
           <Route
             path="/products/:id"
@@ -52,7 +48,6 @@ function Layout() {
           <Route path="/cart" element={user ? <CartPage /> : <Navigate to="/login" replace />} />
           <Route path="/orders" element={user ? <OrdersPage /> : <Navigate to="/login" replace />} />
 
-          {/* ADMIN ROUTES (only for admins; normal users are redirected) */}
           <Route
             path="/admin"
             element={user ? (isAdmin ? <AdminPage /> : <Navigate to="/products" replace />) : <Navigate to="/login" replace />}
@@ -66,7 +61,6 @@ function Layout() {
             element={user ? (isAdmin ? <AdminOrdersPage /> : <Navigate to="/products" replace />) : <Navigate to="/login" replace />}
           />
 
-          {/* PAYMENT RESULT PAGES */}
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/cancel" element={<CancelPage />} />
         </Routes>

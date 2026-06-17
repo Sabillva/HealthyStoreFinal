@@ -27,12 +27,14 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState("")
 
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e?.preventDefault()
     setError("")
+    setSuccess("")
     setLoading(true)
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -40,8 +42,9 @@ function LoginPage() {
       const token = await userCredential.user.getIdToken(true)
       console.log(token)
 
-      //  BURASI VACİBDİR
-      navigate("/products")
+      setSuccess("Login successful! Redirecting...")
+
+      setTimeout(() => navigate("/products"), 1000)
     } catch (error) {
       setError(error.message.replace("Firebase:", "").trim())
     } finally {
@@ -102,6 +105,12 @@ function LoginPage() {
           <Collapse in={Boolean(error)} sx={{ mb: error ? 2 : 0 }}>
             <Alert severity="error" onClose={() => setError("")} sx={{ borderRadius: 2 }}>
               {error}
+            </Alert>
+          </Collapse>
+
+          <Collapse in={Boolean(success)} sx={{ mb: success ? 2 : 0 }}>
+            <Alert severity="success" onClose={() => setSuccess("")} sx={{ borderRadius: 2 }}>
+              {success}
             </Alert>
           </Collapse>
 

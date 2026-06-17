@@ -42,7 +42,6 @@ function Navbar() {
 
   const count = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
-  // Build links based on role.
   const navLinks = [
     { label: "Shop", to: "/products" },
     { label: "My Orders", to: "/orders" },

@@ -1,6 +1,5 @@
 import { createTheme } from "@mui/material/styles"
 
-// Fresh & natural green palette for the Healthy Food Store.
 const theme = createTheme({
   palette: {
     mode: "light",

@@ -4,10 +4,6 @@ import { auth } from "../firebase/firebase"
 
 export const AuthContext = createContext()
 
-// Fallback admin email. The real source of truth is the Firebase custom claim
-// `admin: true` (set via the firebase-admin-tools/make-admin.js script), which
-// the backend also uses through SecurityUtils.isAdmin. We check the claim first
-// and only fall back to this email if the claim has not propagated yet.
 const ADMIN_EMAIL = "sabina@test.com"
 
 export function AuthProvider({ children }) {
